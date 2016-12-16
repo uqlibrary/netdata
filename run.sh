@@ -52,7 +52,7 @@ if [ $CONFCOUNT -eq 0 ]; then
         # registry host
         # is a registry?
         sed -e "s/\[registry\]/\[registry\]\n        enabled = $REGISTRYENABLED/g" -i $NETDATACONF
-	sed -e "s/# registry hostname.*$/registry hostname = $REGISTRYHOST/g" -i $NETDATACONF
+	sed -e "s/# registry to announce.*$/registry to announce = $REGISTRYHOST/g" -i $NETDATACONF
 	sed -e "s/# hostname.*$/hostname = $MYHOSTNAME/g" -i $NETDATACONF
         #echo "[registry]" >> $NETDATACONF
         #echo "registry enabled = $REGISTRYENABLED" >> $NETDATACONF
