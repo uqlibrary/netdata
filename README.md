@@ -13,10 +13,17 @@ More info about project: https://github.com/firehol/netdata
 docker run -d --cap-add SYS_PTRACE \
            -v /proc:/host/proc:ro \
            -v /sys:/host/sys:ro \
+           -e REGISTRYHOST=127.0.0.1 \
+           -e REGISTRYENABLED=yes \
            -p 19999:19999 titpetric/netdata
 ```
 
 Open a browser on http://server:19999/ and watch how your server is doing.
+
+# Some new env vars have been added
+- REGISTRYHOST - Set a registry host to something other than the default.
+- REGISTRYENABLED - Allow this host to act as a registry.
+- MYHOSTNAME - Set my hostname.
 
 # Getting emails on alarms
 
