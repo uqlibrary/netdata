@@ -37,5 +37,27 @@ if [[ -d "/fakenet/" ]]; then
 	sleep 1
 fi
 
+NETDATACONF=/etc/netdata/netdata.conf
+# Run once to trump dump the config file out on first run...
+# First up, check whether the variables we're looking for in this config file already exist.
+
+CONFCOUNT=$(grep -c registry $NETDATACONF)
+if [ $CONFCOUNT -eq 0 ]; then
+        ( sleep 10 ; curl -s http://localhost:${NETDATA_PORT}/netdata.conf > $NETDATACONF ; pkill -9 netdata ) & /usr/sbin/netdata -D -u root -s /host -p ${NETDATA_PORT}
+        # add some artificial sleep because netdata might think it can't bind to $NETDATA_PORT
+        # and report things like "netdata: FATAL: Cannot listen on any socket. Exiting..."
+        sleep 1
+
+        # Fix config file with runtime vars for
+        # registry host
+        # is a registry?
+        sed -e "s/\[registry\]/\[registry\]\n        enabled = $REGISTRYENABLED/g" -i $NETDATACONF
+	sed -e "s/# registry hostname.*$/registry hostname = $REGISTRYHOST/g" -i $NETDATACONF
+	sed -e "s/# hostname.*$/hostname = $MYHOSTNAME/g" -i $NETDATACONF
+        #echo "[registry]" >> $NETDATACONF
+        #echo "registry enabled = $REGISTRYENABLED" >> $NETDATACONF
+        #echo "registry hostname = $REGISTRYHOST" >> $NETDATACONF
+fi
+
 # main entrypoint
 exec /usr/sbin/netdata -D -u root -s /host -p ${NETDATA_PORT}
